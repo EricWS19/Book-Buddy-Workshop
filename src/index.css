@@ -96,15 +96,6 @@ button {
   cursor: pointer;
 }
 
-button:disabled {
-  background-color: #95a5a6;
-  cursor: not-allowed;
-}
-
-button:hover:not(:disabled) {
-  background-color: #2980b9;
-}
-
 .user-profile,
 .account-info {
   background-color: white;
