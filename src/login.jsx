@@ -4,9 +4,7 @@ import TokenContext from "./TokenContext";
 
 export default function Login({ token }) {
     const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+    const [password, setPassword] = useState('');}
 
     async function handleSubmit(e) {
         e.preventDefault()
