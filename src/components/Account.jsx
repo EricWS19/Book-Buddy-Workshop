@@ -1,45 +1,70 @@
-import { useState } from "react";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import bookLogo from "./assets/books.png";
-import Account from "./components/Account";
+import { useEffect, useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import TokenContext from "./TokenContext";
 
-function App() {
-  const [token, setToken] = useState(null);
+export default function Account() {
+  const { token, setToken } = useContext(TokenContext); // Get token and setToken from context
+  const [userInfo, setUserInfo] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+
+  async function fetchUserInfo() {
+    if (!token) {
+      setError("You must be logged in to view your account.");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setError(null);
+      const res = await fetch(
+        "https://fsa-book-buddy-b6e748d1380d.herokuapp.com/api/users/me",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      if (!res.ok) throw new Error("Failed to fetch user info");
+      const data = await res.json();
+      setUserInfo(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    fetchUserInfo();
+  }, [token]);
+
+  const handleLogout = () => {
+    setToken(null);
+    navigate("/login");
+  };
+
+  if (loading) return <p>Loading account info...</p>;
+
+  if (error)
+    return (
+      <div>
+        <p style={{ color: "red" }}>{error}</p>
+        <button onClick={fetchUserInfo}>Retry</button>
+      </div>
+    );
+
+  if (!userInfo) return null;
 
   return (
-    <Router>
-      <div className="app-wrapper">
-        <header>
-          <h1>
-            <img id="logo-image" src={bookLogo} alt="Book Logo" />
-            Library App
-          </h1>
-          <nav>
-            <Link to="/">Home</Link> | <Link to="/account">My Account</Link>
-          </nav>
-        </header>
-
-        <main>
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <>
-                  <h2>Welcome to BookBuddy 📚</h2>
-                  <p>
-                    This app lets you browse a public library catalog, check out
-                    books, and manage your account.
-                  </p>
-                  <p>Use the navigation above to get started. :D</p>
-                </>
-              }
-            />
-            <Route path="/account" element={<Account token={token} />} />
-          </Routes>
-        </main>
-      </div>
-    </Router>
+    <div>
+      <h2>My Account</h2>
+      <p>
+        Name: {userInfo.firstName} {userInfo.lastName}
+      </p>
+      <p>Email: {userInfo.email}</p>
+      <button onClick={handleLogout}>Logout</button>
+    </div>
   );
 }
-
-export default App;
+>>>>>>> 0f6fdb6 (Rearranged Login.jsx to component file, made modifications to files, added TokenContext.jsx file, add export default function SingleBook(), SingleBook file is NOT completed)
