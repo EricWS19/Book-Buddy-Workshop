@@ -1,11 +1,13 @@
 /* TODO - add your code to create a functional React component that renders a login form */
 import { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";     // import useNavigate 
 import TokenContext from "./TokenContext";
 
 export default function Login() {
+  const { setToken } = useContext(TokenContext);
+  const navigate = useNavigate();        //get navigate function 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { setToken } = useContext(TokenContext); // Get setToken from context
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -24,13 +26,15 @@ export default function Login() {
       console.log(data);
 
       if (data.token) {
-        setToken(data.token); // Save token in context state
+        setToken(data.token);
+        alert("Login successful!");
+        navigate("/"); // ✅ redirect to home page
       } else {
         alert("Login failed: " + (data.message || "Unknown error"));
       }
     } catch (error) {
       console.error("Login error:", error);
-      alert("Something went wrong during login.");
+      alert("Something went wrong during login." + error.message);
     }
   }
 

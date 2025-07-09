@@ -20,7 +20,7 @@ export default function SingleBook() {
         if (!res.ok) throw new Error("Failed to fetch book");
 
         const data = await res.json();
-        setBook(data.book); // assuming API returns { book: {...} }
+        setBook(data); 
       } catch (err) {
         setError(err.message);
       } finally {
@@ -41,7 +41,7 @@ export default function SingleBook() {
       <p><strong>Author:</strong> {book.author}</p>
       <p><strong>Description:</strong> {book.description || "No description available."}</p>
       {/* Add more fields if needed, like publication date, genre, etc. */}
-      <Link to="/books">Back to Books</Link>
+      <Link to="/">Back to Books</Link>
     </div>
   );
 }

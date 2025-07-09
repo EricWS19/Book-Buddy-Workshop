@@ -27,10 +27,9 @@ function App() {
         <Routes>
           <Route path='/' element={<Home />} />
           <Route path='/books/:id' element={<SingleBook />} />
-          <Route path='/login' element={<Login />} />
-          <Route path='/register' element={<Register />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
           <Route path='/account' element={<Account />} />
-          <Route path='*' element={<p>404 - Page Not Found</p>} />
         </Routes>
       </main>
     </TokenContext.Provider>

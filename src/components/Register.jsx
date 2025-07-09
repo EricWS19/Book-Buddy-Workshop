@@ -1,7 +1,10 @@
 /* TODO - add your code to create a functional React component that renders a registration form */
-import { useState } from "react";
+import { useState, useContext } from "react";
+import TokenContext from "./TokenContext";
 
-export default function Register({ setToken }) {
+export default function Register() {
+  const { setToken } = useContext(TokenContext);
+
   const API = "https://fsa-book-buddy-b6e748d1380d.herokuapp.com/api/users/register";
 
   const [firstName, setFirstName] = useState("");
