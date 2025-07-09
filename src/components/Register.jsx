@@ -2,36 +2,32 @@
 import { useState } from "react";
 
 export default function Register({ setToken }) {
-  //API placeholder until api page created
-  const API =
-    "https://fsa-book-buddy-b6e748d1380d.herokuapp.com/api/users/register";
+  const API = "https://fsa-book-buddy-b6e748d1380d.herokuapp.com/api/users/register";
+
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrorMessage(null);
 
-    // Basic validation
     if (!firstName || !lastName || !email || !password) {
-      alert("All fields are required.");
+      setErrorMessage("All fields are required.");
       return;
     }
 
-    const userData = {
-      firstName,
-      lastName,
-      email,
-      password,
-    };
+    setIsSubmitting(true);
+
+    const userData = { firstName, lastName, email, password };
 
     try {
-      const response = await fetch(`${API}`, {
+      const response = await fetch(API, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(userData),
       });
 
@@ -41,16 +37,26 @@ export default function Register({ setToken }) {
       }
 
       const data = await response.json();
-      setToken(data.token); // Assuming the token is returned in the response
+      setToken(data.token);
       alert("Registration successful!");
+
+      // Clear form
+      setFirstName("");
+      setLastName("");
+      setEmail("");
+      setPassword("");
     } catch (error) {
-      console.error(error);
+      setErrorMessage(error.message);
+    } finally {
+      setIsSubmitting(false);
     }
   };
+
   return (
     <div className="register-container">
       <h2>Register</h2>
       <form onSubmit={handleSubmit} className="register-form">
+        {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
         <div className="form-group">
           <label htmlFor="firstName">First Name:</label>
           <input
@@ -59,6 +65,7 @@ export default function Register({ setToken }) {
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
             required
+            disabled={isSubmitting}
           />
         </div>
         <div className="form-group">
@@ -69,6 +76,7 @@ export default function Register({ setToken }) {
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
             required
+            disabled={isSubmitting}
           />
         </div>
         <div className="form-group">
@@ -79,6 +87,7 @@ export default function Register({ setToken }) {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+            disabled={isSubmitting}
           />
         </div>
         <div className="form-group">
@@ -89,10 +98,11 @@ export default function Register({ setToken }) {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+            disabled={isSubmitting}
           />
         </div>
-        <button type="submit" className="register-button">
-          Register
+        <button type="submit" className="register-button" disabled={isSubmitting}>
+          {isSubmitting ? "Registering..." : "Register"}
         </button>
       </form>
     </div>
