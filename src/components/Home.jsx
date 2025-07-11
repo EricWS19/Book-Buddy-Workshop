@@ -11,12 +11,11 @@ export default function Home() {
   const navigate = useNavigate();
 
   const [books, setBooks] = useState([]);
-  const [checkedOutBooks, setCheckedOutBooks] = useState([]);
+  const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Combined effect: fetch data & clear refresh flag
   useEffect(() => {
     const fetchBooks = async () => {
       setLoading(true);
@@ -30,12 +29,12 @@ export default function Home() {
           const userRes = await fetch(USER_API, {
             headers: { Authorization: `Bearer ${token}` },
           });
-          const userData = await userRes.json();
-          setCheckedOutBooks(userData.checkedOutBooks || []);
-        } else {
-          setCheckedOutBooks([]);
-        }
 
+          const userData = await userRes.json();
+          setReservations(userData.reservations || []);
+        } else {
+          setReservations([]);
+        }
       } catch (err) {
         setError(err.message);
       } finally {
@@ -53,6 +52,37 @@ export default function Home() {
   const handleLogout = () => {
     setToken(null);
     navigate("/login");
+  };
+
+  const handleReturnAll = async () => {
+    if (!token || reservations.length === 0) return;
+
+    const confirmReturn = window.confirm("Are you sure you want to return all checked out books?");
+    if (!confirmReturn) return;
+
+    for (const book of reservations) {
+      try {
+        await fetch(`https://fsa-book-buddy-b6e748d1380d.herokuapp.com/api/reservations/${book.id}`, {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+      } catch (err) {
+        console.error(`Failed to return book ID ${book.id}:`, err);
+      }
+    }
+
+    // Refresh reservations
+    try {
+      const userRes = await fetch(USER_API, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const userData = await userRes.json();
+      setReservations(userData.reservations || []);
+    } catch (err) {
+      console.error("Failed to refresh reservations:", err);
+    }
   };
 
   const filteredBooks = books.filter((book) =>
@@ -88,17 +118,21 @@ export default function Home() {
             <div className="checked-out-list">
               <h3>Checked Out Books</h3>
               <p>
-                You have {checkedOutBooks.length} book
-                {checkedOutBooks.length !== 1 ? "s" : ""} checked out.
+                You have {reservations.length} book
+                {reservations.length !== 1 ? "s" : ""} checked out.
               </p>
-              {checkedOutBooks.length > 0 && (
-                <ul>
-                  {checkedOutBooks.map((book) => (
-                    <li key={book.id}>
-                      {book.title} by {book.author}
-                    </li>
-                  ))}
-                </ul>
+
+              {reservations.length > 0 && (
+                <>
+                  <ul>
+                    {reservations.map((book) => (
+                      <li key={book.id}>
+                        {book.title} by {book.author}
+                      </li>
+                    ))}
+                  </ul>
+                  <button onClick={handleReturnAll}>Return All Books</button>
+                </>
               )}
             </div>
 

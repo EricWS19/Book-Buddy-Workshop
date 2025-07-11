@@ -90,8 +90,6 @@ export default function Account() {
       </p>
       <p>Email: {userInfo.email}</p>
 
-      <h3>Checked Out Books</h3>
-
       {actionError && <p style={{ color: "red" }}>{actionError}</p>}
 
       {userInfo.checkedOutBooks?.length > 0 ? (
@@ -105,13 +103,13 @@ export default function Account() {
             </li>
           ))}
         </ul>
-      ) : (
-        <p>You have 0 books checked out.</p>
-      )}
+      ) : null}
 
       <div className="button-group">
         <button onClick={handleLogout}>Logout</button>
-        <button onClick={() => navigate("/")} className="account-button">Go To Books</button>
+        <button onClick={() => navigate("/")} className="account-button">
+          Go To Books
+        </button>
       </div>
     </div>
   );
