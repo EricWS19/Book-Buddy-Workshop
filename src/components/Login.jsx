@@ -23,17 +23,15 @@ export default function Login() {
       );
 
       const data = await response.json();
-      console.log(data);
 
       if (data.token) {
         setToken(data.token);
         alert("Login successful!");
-        navigate("/"); // ✅ redirect to home page
+        navigate("/"); // redirect to home page
       } else {
         alert("Login failed: " + (data.message || "Unknown error"));
       }
     } catch (error) {
-      console.error("Login error:", error);
       alert("Something went wrong during login." + error.message);
     }
   }

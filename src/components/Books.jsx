@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 const API_URL = 'https://fsa-book-buddy-b6e748d1380d.herokuapp.com/api/books';
-export default function Books({ searchTerm }) {
+
+function Books({ searchTerm }) {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -14,7 +15,6 @@ export default function Books({ searchTerm }) {
         setBooks(data.books || []);
       } catch (error) {
         setError("Failed to fetch books.");
-        console.error("Error fetching books:", error);
       } finally {
         setLoading(false);
       }
@@ -41,3 +41,9 @@ export default function Books({ searchTerm }) {
     </div>
   );
 }
+
+Books.defaultProps = {
+  searchTerm: ""
+};
+
+export default Books;

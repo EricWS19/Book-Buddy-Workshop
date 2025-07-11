@@ -6,8 +6,12 @@ body {
   color: #333;
 }
 
-h1, h2 {
-  color: #2c3e50;
+h1 {
+  color: white;
+}
+
+h2 {
+  color: #2980B9;
 }
 
 header {
@@ -120,4 +124,26 @@ p[style*="red"] {
 p[style*="green"] {
   color: green;
   font-weight: bold;
+}
+
+.account-button {
+  margin-left: 20px;  
+}
+
+.button-group button {
+  margin-right: 20px; 
+  margin-bottom: 20px;
+}
+
+.home-layout {
+  display: flex;
+  gap: 2rem;
+}
+
+.checked-out-list, .book-list {
+  flex: 1;
+  background-color: white;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
 }

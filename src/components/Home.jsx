@@ -1,38 +1,63 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState, useContext } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import TokenContext from "./TokenContext";
 
-const API_URL = "https://fsa-book-buddy-b6e748d1380d.herokuapp.com/api/books";
+const BOOKS_API = "https://fsa-book-buddy-b6e748d1380d.herokuapp.com/api/books";
+const USER_API = "https://fsa-book-buddy-b6e748d1380d.herokuapp.com/api/users/me";
 
 export default function Home() {
+  const { token, setToken } = useContext(TokenContext);
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const [books, setBooks] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [checkedOutBooks, setCheckedOutBooks] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
+  // Combined effect: fetch data & clear refresh flag
   useEffect(() => {
-    async function fetchBooks() {
+    const fetchBooks = async () => {
+      setLoading(true);
+      setError(null);
       try {
-        const response = await fetch(API_URL);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        console.log("Fetched data:", data);
+        const booksRes = await fetch(BOOKS_API);
+        const booksData = await booksRes.json();
+        setBooks(Array.isArray(booksData) ? booksData : []);
 
-        // Since data is an array, set it directly
-        if (Array.isArray(data)) {
-          setBooks(data);
+        if (token) {
+          const userRes = await fetch(USER_API, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const userData = await userRes.json();
+          setCheckedOutBooks(userData.checkedOutBooks || []);
         } else {
-          throw new Error("Expected an array of books");
+          setCheckedOutBooks([]);
         }
+
       } catch (err) {
         setError(err.message);
       } finally {
         setLoading(false);
       }
-    }
+    };
 
     fetchBooks();
-  }, []);
+
+    if (location.state?.refresh) {
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [token, location.key, location.state?.refresh]);
+
+  const handleLogout = () => {
+    setToken(null);
+    navigate("/login");
+  };
+
+  const filteredBooks = books.filter((book) =>
+    book.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   if (loading) return <p>Loading books...</p>;
   if (error) return <p style={{ color: "red" }}>Error: {error}</p>;
@@ -40,17 +65,87 @@ export default function Home() {
   return (
     <div>
       <h2>Welcome to the Library App</h2>
-      <p>Use the navigation to browse books, login, or register.</p>
-      <h3>Available Books</h3>
-      <ul>
-        {books.map((book) => (
-          <li key={book.id}>
-            <Link to={`/books/${book.id}`}>
-              {book.title} by {book.author}
-            </Link>
-          </li>
-        ))}
-      </ul>
+
+      {/* Search bar */}
+      <div style={{ marginBottom: "1rem" }}>
+        <input
+          type="text"
+          placeholder="Search books..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
+
+      {token ? (
+        <>
+          <div className="button-group">
+            <button onClick={() => navigate("/account")}>Go to My Account</button>
+            <button onClick={handleLogout}>Logout</button>
+          </div>
+
+          <div className="home-layout">
+            {/* Checked Out Books */}
+            <div className="checked-out-list">
+              <h3>Checked Out Books</h3>
+              <p>
+                You have {checkedOutBooks.length} book
+                {checkedOutBooks.length !== 1 ? "s" : ""} checked out.
+              </p>
+              {checkedOutBooks.length > 0 && (
+                <ul>
+                  {checkedOutBooks.map((book) => (
+                    <li key={book.id}>
+                      {book.title} by {book.author}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
+            {/* Available Books */}
+            <div className="book-list">
+              <h3>Available Books</h3>
+              {filteredBooks.length === 0 ? (
+                <p>No books match your search.</p>
+              ) : (
+                <ul>
+                  {filteredBooks.map((book) => (
+                    <li key={book.id}>
+                      <Link to={`/books/${book.id}`}>
+                        {book.title} by {book.author}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
+        </>
+      ) : (
+        <>
+          <p>
+            Please <Link to="/login">login</Link> or{" "}
+            <Link to="/register">register</Link> to check out books.
+          </p>
+
+          <div className="book-list">
+            <h3>Available Books</h3>
+            {filteredBooks.length === 0 ? (
+              <p>No books match your search.</p>
+            ) : (
+              <ul>
+                {filteredBooks.map((book) => (
+                  <li key={book.id}>
+                    <Link to={`/books/${book.id}`}>
+                      {book.title} by {book.author}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 }

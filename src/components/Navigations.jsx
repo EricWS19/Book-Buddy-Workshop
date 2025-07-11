@@ -1,15 +1,13 @@
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 export default function Navigations({ token, setToken }) {
   const handleLogout = () => {
-    setToken(null); // Clear the token
+    setToken(null); // Clear the token on logout
   };
 
   return (
     <nav>
       <ul>
-        <li><Link to="/">Home</Link></li>
-
         {!token ? (
           <>
             <li><Link to="/login">Login</Link></li>
@@ -17,8 +15,13 @@ export default function Navigations({ token, setToken }) {
           </>
         ) : (
           <>
+            {/* Account link shown only if logged in */}
             <li><Link to="/account">Account</Link></li>
-            <li><button onClick={handleLogout}>Logout</button></li>
+
+            {/* Logout button */}
+            <li>
+              <button onClick={handleLogout}>Logout</button>
+            </li>
           </>
         )}
       </ul>
