@@ -123,6 +123,7 @@ export default function Register() {
         <button type="submit" className="register-button" disabled={isSubmitting}>
           {isSubmitting ? "Registering..." : "Register"}
         </button>
+        <button type="button" onClick={() => navigate("/")}>Back to Books</button>
       </form>
     </div>
   );
