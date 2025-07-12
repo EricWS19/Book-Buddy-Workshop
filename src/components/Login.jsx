@@ -64,6 +64,7 @@ export default function Login() {
           </label>
         </div>
         <button type="submit">Login</button>
+        <button type="button" onClick={() => navigate("/")}>Back to Books</button>
       </form>
     </>
   );
