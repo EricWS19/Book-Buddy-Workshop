@@ -3,7 +3,8 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import TokenContext from "./TokenContext";
 
 const API_URL = "https://fsa-book-buddy-b6e748d1380d.herokuapp.com/api/books";
-const RESERVATIONS_API = "https://fsa-book-buddy-b6e748d1380d.herokuapp.com/api/reservations";
+const RESERVATIONS_API =
+  "https://fsa-book-buddy-b6e748d1380d.herokuapp.com/api/reservations";
 
 export default function SingleBook() {
   const { token } = useContext(TokenContext);
@@ -35,18 +36,21 @@ export default function SingleBook() {
         if (token) {
           console.log("Using token:", token);
           // Fetch user data to get checked out books and their reservation ids
-          const userRes = await fetch("https://fsa-book-buddy-b6e748d1380d.herokuapp.com/api/users/me", {
-            headers: { Authorization: `Bearer ${token}` },
-          });
+          const userRes = await fetch(
+            "https://fsa-book-buddy-b6e748d1380d.herokuapp.com/api/users/me",
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
           if (!userRes.ok) throw new Error("Failed to fetch user info");
           const userData = await userRes.json();
 
           console.log("User reservations:", userData.reservations);
 
           const reservation = userData.reservations?.find(
-            (reservation) => reservation.bookId === Number(id) 
+            (reservation) => reservation.bookId === Number(id)
           );
-          
+
           if (reservation) {
             setUserReservationId(reservation.id);
           } else {
@@ -66,82 +70,82 @@ export default function SingleBook() {
   }, [id, token]);
 
   async function handleCheckout() {
-  if (!token) {
-    alert("Please log in to check out a book.");
-    return;
-  }
-  setActionLoading(true);
-  setActionError(null);
-
-  try {
-    console.log("Using token for checkout:", token);
-    const res = await fetch(RESERVATIONS_API, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
-      },
-      body: JSON.stringify({ bookId: id }),
-    });
-
-    if (!res.ok) {
-      const errorData = await res.json();
-      throw new Error(errorData.message || "Failed to check out book");
+    if (!token) {
+      alert("Please log in to check out a book.");
+      return;
     }
+    setActionLoading(true);
+    setActionError(null);
 
-    const reservation = await res.json();
-    alert("Book checked out successfully!");
+    try {
+      console.log("Using token for checkout:", token);
+      const res = await fetch(RESERVATIONS_API, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ bookId: id }),
+      });
 
-    setUserReservationId(reservation.id);
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || "Failed to check out book");
+      }
 
-    // Trigger home page to refresh checked out books 
-    navigate("/", { state: { refresh: true } });
-  } catch (err) {
-    setActionError(err.message);
-  } finally {
-    setActionLoading(false);
+      const reservation = await res.json();
+      alert("Book checked out successfully!");
+
+      setUserReservationId(reservation.id);
+
+      // Trigger home page to refresh checked out books
+      navigate("/", { state: { refresh: true } });
+    } catch (err) {
+      setActionError(err.message);
+    } finally {
+      setActionLoading(false);
+    }
   }
-}
 
   async function handleReturn() {
-  if (!token) {
-    alert("Please log in to return a book.");
-    return;
-  }
-
-  if (!userReservationId) {
-    alert("No reservation found for this book.");
-    return;
-  }
-
-  setActionLoading(true);
-  setActionError(null);
-
-  try {
-    console.log("Using token for checkout:", token);
-    const res = await fetch(`${RESERVATIONS_API}/${userReservationId}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`
-      },
-    });
-
-    if (!res.ok) {
-      const errorData = await res.json();
-      throw new Error(errorData.message || "Failed to return book");
+    if (!token) {
+      alert("Please log in to return a book.");
+      return;
     }
 
-    alert("Book returned successfully!");
-    setUserReservationId(null);
+    if (!userReservationId) {
+      alert("No reservation found for this book.");
+      return;
+    }
 
-    // Trigger home page to refresh checked out books 
-    navigate("/", { state: { refresh: true } });
-  } catch (err) {
-    setActionError(err.message);
-  } finally {
-    setActionLoading(false);
+    setActionLoading(true);
+    setActionError(null);
+
+    try {
+      console.log("Using token for checkout:", token);
+      const res = await fetch(`${RESERVATIONS_API}/${userReservationId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || "Failed to return book");
+      }
+
+      alert("Book returned successfully!");
+      setUserReservationId(null);
+
+      // Trigger home page to refresh checked out books
+      navigate("/", { state: { refresh: true } });
+    } catch (err) {
+      setActionError(err.message);
+    } finally {
+      setActionLoading(false);
+    }
   }
-}
 
   if (loading) return <p>Loading book details...</p>;
   if (error) return <p style={{ color: "red" }}>Error: {error}</p>;
@@ -150,11 +154,17 @@ export default function SingleBook() {
   return (
     <div>
       <h2>{book.title}</h2>
+      <img
+        src={book.coverimage}
+        alt={book.title + " cover"}
+        style={{ maxWidth: "200px" }}
+      />
       <p>
         <strong>Author:</strong> {book.author}
       </p>
       <p>
-        <strong>Description:</strong> {book.description || "No description available."}
+        <strong>Description:</strong>{" "}
+        {book.description || "No description available."}
       </p>
 
       {actionError && <p style={{ color: "red" }}>{actionError}</p>}
