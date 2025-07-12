@@ -1,5 +1,5 @@
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
   padding: 0;
   background-color: #f4f6f9;
@@ -11,7 +11,7 @@ h1 {
 }
 
 h2 {
-  color: #2980B9;
+  color: #2980b9;
 }
 
 header {
@@ -67,7 +67,7 @@ form {
   background-color: white;
   padding: 2rem;
   border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
   max-width: 500px;
   margin: 2rem auto;
 }
@@ -105,7 +105,7 @@ button {
   background-color: white;
   padding: 2rem;
   border-radius: 8px;
-  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
   max-width: 600px;
   margin: auto;
 }
@@ -127,11 +127,11 @@ p[style*="green"] {
 }
 
 .account-button {
-  margin-left: 20px;  
+  margin-left: 20px;
 }
 
 .button-group button {
-  margin-right: 20px; 
+  margin-right: 20px;
   margin-bottom: 20px;
 }
 
@@ -140,10 +140,16 @@ p[style*="green"] {
   gap: 2rem;
 }
 
-.checked-out-list, .book-list {
+.checked-out-list,
+.book-list {
   flex: 1;
   background-color: white;
   padding: 1rem;
   border-radius: 8px;
-  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
+
+
+#app-title-link {
+  text-decoration: none;
+} 
