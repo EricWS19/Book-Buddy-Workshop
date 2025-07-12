@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-const API_URL = 'https://fsa-book-buddy-b6e748d1380d.herokuapp.com/api/books';
+const API_URL = "https://fsa-book-buddy-b6e748d1380d.herokuapp.com/api/books";
 
 function Books({ searchTerm }) {
   const [books, setBooks] = useState([]);
@@ -21,16 +21,17 @@ function Books({ searchTerm }) {
     };
     fetchBooks();
   }, []);
-  const filtered = books.filter(book =>
+  const filtered = books.filter((book) =>
     book.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
   return (
     <div>
       <h2>Books</h2>
       {loading && <p>Loading books...</p>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
       {!loading && filtered.length === 0 && <p>No books found.</p>}
-      {filtered.map(book => (
+      {filtered.map((book) => (
+        
         <div key={book.id}>
           <Link to={`/books/${book.id}`}>
             <b>{book.title}</b>
@@ -43,7 +44,7 @@ function Books({ searchTerm }) {
 }
 
 Books.defaultProps = {
-  searchTerm: ""
+  searchTerm: "",
 };
 
 export default Books;

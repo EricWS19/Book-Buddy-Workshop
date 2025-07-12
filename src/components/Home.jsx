@@ -3,7 +3,8 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import TokenContext from "./TokenContext";
 
 const BOOKS_API = "https://fsa-book-buddy-b6e748d1380d.herokuapp.com/api/books";
-const USER_API = "https://fsa-book-buddy-b6e748d1380d.herokuapp.com/api/users/me";
+const USER_API =
+  "https://fsa-book-buddy-b6e748d1380d.herokuapp.com/api/users/me";
 
 export default function Home() {
   const { token, setToken } = useContext(TokenContext);
@@ -57,17 +58,22 @@ export default function Home() {
   const handleReturnAll = async () => {
     if (!token || reservations.length === 0) return;
 
-    const confirmReturn = window.confirm("Are you sure you want to return all checked out books?");
+    const confirmReturn = window.confirm(
+      "Are you sure you want to return all checked out books?"
+    );
     if (!confirmReturn) return;
 
     for (const book of reservations) {
       try {
-        await fetch(`https://fsa-book-buddy-b6e748d1380d.herokuapp.com/api/reservations/${book.id}`, {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        await fetch(
+          `https://fsa-book-buddy-b6e748d1380d.herokuapp.com/api/reservations/${book.id}`,
+          {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
       } catch (err) {
         console.error(`Failed to return book ID ${book.id}:`, err);
       }
@@ -109,7 +115,9 @@ export default function Home() {
       {token ? (
         <>
           <div className="button-group">
-            <button onClick={() => navigate("/account")}>Go to My Account</button>
+            <button onClick={() => navigate("/account")}>
+              Go to My Account
+            </button>
             <button onClick={handleLogout}>Logout</button>
           </div>
 
@@ -127,6 +135,10 @@ export default function Home() {
                   <ul>
                     {reservations.map((book) => (
                       <li key={book.id}>
+                        <img
+                          src={book.coverimage}
+                          style={{ maxWidth: "30px" }}
+                        />
                         {book.title} by {book.author}
                       </li>
                     ))}
@@ -145,6 +157,7 @@ export default function Home() {
                 <ul>
                   {filteredBooks.map((book) => (
                     <li key={book.id}>
+                      <img src={book.coverimage} style={{ maxWidth: "30px" }} />
                       <Link to={`/books/${book.id}`}>
                         {book.title} by {book.author}
                       </Link>
@@ -170,6 +183,7 @@ export default function Home() {
               <ul>
                 {filteredBooks.map((book) => (
                   <li key={book.id}>
+                    <img src={book.coverimage} style={{ maxWidth: "30px" }} />
                     <Link to={`/books/${book.id}`}>
                       {book.title} by {book.author}
                     </Link>
