@@ -132,7 +132,7 @@ export default function Home() {
 
               {reservations.length > 0 && (
                 <>
-                  <ul>
+                  <ul style={{ listStyleType: "none", paddingLeft: "4px"}}>
                     {reservations.map((book) => (
                       <li key={book.id}>
                         <img
@@ -154,7 +154,7 @@ export default function Home() {
               {filteredBooks.length === 0 ? (
                 <p>No books match your search.</p>
               ) : (
-                <ul>
+                <ul style={{ listStyleType: "none", paddingLeft: "4px"}}>
                   {filteredBooks.map((book) => (
                     <li key={book.id}>
                       <img src={book.coverimage} style={{ maxWidth: "30px" }} />
@@ -180,7 +180,7 @@ export default function Home() {
             {filteredBooks.length === 0 ? (
               <p>No books match your search.</p>
             ) : (
-              <ul>
+              <ul style={{ listStyleType: "none", paddingLeft: "4px"}}>
                 {filteredBooks.map((book) => (
                   <li key={book.id}>
                     <img src={book.coverimage} style={{ maxWidth: "30px" }} />
