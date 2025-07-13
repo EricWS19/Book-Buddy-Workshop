@@ -108,7 +108,7 @@ export default function Account() {
       <div className="button-group">
         <button onClick={handleLogout}>Logout</button>
         <button onClick={() => navigate("/")} className="account-button">
-          Go To Books
+          Homepage
         </button>
       </div>
     </div>

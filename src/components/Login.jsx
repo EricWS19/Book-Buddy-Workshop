@@ -25,6 +25,7 @@ export default function Login() {
 
       if (data.token) {
         setToken(data.token);
+        localStorage.setItem("token", data.token);
         alert("Login successful!");
         navigate("/"); // redirect to home page
       } else {

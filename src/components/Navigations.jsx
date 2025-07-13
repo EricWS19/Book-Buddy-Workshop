@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 
 export default function Navigations({ token, setToken }) {
+  console.log("Token inside Navigations:", token);
+
   const handleLogout = () => {
     setToken(null); // Clear the token on logout
   };
@@ -8,19 +10,35 @@ export default function Navigations({ token, setToken }) {
   return (
     <nav>
       <ul>
-        {!token ? (
+        {/* Show these ONLY when the user is NOT logged in */}
+        {!token && (
           <>
             <li><Link to="/login">Login</Link></li>
             <li><Link to="/register">Register</Link></li>
           </>
-        ) : (
-          <>
-            {/* Account link shown only if logged in */}
-            <li><Link to="/account">Account</Link></li>
+        )}
 
-            {/* Logout button */}
+        {/* Show these ONLY when the user IS logged in */}
+        {token && (
+          <>
+            <li><Link to="/account">Account</Link></li>
             <li>
-              <button onClick={handleLogout}>Logout</button>
+              <button 
+                onClick={handleLogout} 
+                className="logout-button"
+                style={{ 
+                  background: "none", 
+                  border: "none", 
+                  padding: 0, 
+                  color: "#ECF0F1",
+                  cursor: "pointer",
+                  fontSize: "16px",
+                  fontWeight: "bold",
+                  fontStyle: "Segoe UI, Tahoma, Geneva, Verdana, sans-serif"
+                }}
+              >
+                Logout
+              </button>
             </li>
           </>
         )}

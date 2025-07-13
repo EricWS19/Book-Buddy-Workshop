@@ -114,13 +114,6 @@ export default function Home() {
 
       {token ? (
         <>
-          <div className="button-group">
-            <button onClick={() => navigate("/account")}>
-              Go to My Account
-            </button>
-            <button onClick={handleLogout}>Logout</button>
-          </div>
-
           <div className="home-layout">
             {/* Checked Out Books */}
             <div className="checked-out-list">
@@ -170,11 +163,6 @@ export default function Home() {
         </>
       ) : (
         <>
-          <p>
-            Please <Link to="/login">login</Link> or{" "}
-            <Link to="/register">register</Link> to check out books.
-          </p>
-
           <div className="book-list">
             <h3>Available Books</h3>
             {filteredBooks.length === 0 ? (
